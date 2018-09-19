@@ -1,0 +1,148 @@
+---
+title: "Introduction to `tidyverse`"
+output:
+  html_document:
+    toc: yes
+    toc_float:
+      collapsed: no
+  pdf_document:
+    toc: yes
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(titanic)
+```
+
+Tidyverse is a collection of R packages designed for data science. They all share common grammar and data structures.
+
+The core packages are:
+
+* **ggplot2**
+* **dplyr**
+* tidyr
+* readr
+* purrr
+* tibble
+* **stringr**
+* forcats
+
+### Setting up tidyverse
+
+First install tidyverse:
+`install.packages("tidyverse")`
+
+Then load tidyverse:
+`library(tidyverse)`
+
+### Loading the Data
+
+First install the Data Package:
+`install.packages("titanic")`
+
+Then load the Data:
+`library(titanic)`
+
+### Inspecting the Data
+
+```{r}
+str(titanic_train)
+```
+
+### A Question You Might Ask: 
+#### How much did people pay?
+
+```{r}
+ggplot(titanic_train, aes(Fare)) + 
+  geom_histogram(binwidth = 10, fill = "cornflowerblue") + 
+  geom_rug() + 
+  ggtitle("Distribution of Fares on the Titanic") + 
+  xlab("Fare (1912 pounds)") + ylab("Num Passengers")
+```
+
+#### What about for each of the different classes?
+
+```{r}
+ggplot(titanic_train, aes(Fare, color=factor(Pclass))) + 
+  geom_density() + 
+  facet_wrap(~ Pclass) + 
+  theme(legend.position = "none") + 
+  xlab("Fare (1912 pounds)")
+```
+
+#### Let's go back and see how the medians compare
+
+```{r}
+first_class_mean = median(select(filter(titanic_train, Pclass == 1), Fare)[[1]])
+second_class_mean = median(select(filter(titanic_train, Pclass == 2), Fare)[[1]])
+third_class_mean = median(select(filter(titanic_train, Pclass == 3), Fare)[[1]])
+
+ggplot(titanic_train, aes(Fare)) + geom_histogram(binwidth = 10) + 
+  geom_vline(aes(xintercept = first_class_mean, color = "First")) + 
+  geom_vline(aes(xintercept = second_class_mean, color = "Second")) + 
+  geom_vline(aes(xintercept =third_class_mean, color = "Third")) + 
+  scale_color_manual(name="Class", values = c("First" = "darkgreen", "Second" = "blue", "Third" = "red")) + 
+  ggtitle("Distribution of Fares on the Titanic") + 
+  xlab("Fare (1912 pounds)") + ylab("Num Passengers")
+```
+
+### **YOUR TURN:**
+#### Create a density plot of `Fare` with a rug plot for each `Sex`
+
+```{r}
+ggplot(titanic_train, aes(Fare, color=factor(Sex))) + 
+  geom_density() + 
+  facet_wrap(~ Sex) + 
+  geom_rug() +
+  theme(legend.position = "none") + 
+  xlab("Fare (1912 pounds)")
+```
+
+### Another Question You Might Ask: 
+#### Is there a relationship between a passenger's title and their survival rate?
+
+```{r}
+names = select(titanic_train, "Name")[[1]]
+mr = str_detect(names, "Mr.")
+mrs = str_detect(names, "Mrs.")
+miss = str_detect(names, "Miss.")
+master = str_detect(names, "Master")
+leftovers = filter(titanic_train, !mr & !mrs & !miss & !master)$Name
+leftovers
+```
+
+#### The Pipe Operator `%>%`
+
+To get the survival outcome of only the "Mr"s using `dplyr`, we have two option:
+
+1. Nested Functions: `select(filter(titanic_train, mr)`
+2. The Pipe Operator: `titanic_train %>% select("Survived") %>% filter(mr)`
+
+```{r}
+mr_outcomes = select(filter(titanic_train, mr), "Survived")[[1]]
+mrs_outcomes = select(filter(titanic_train, mrs), "Survived")[[1]]
+miss_outcomes = select(filter(titanic_train, miss), "Survived")[[1]]
+master_outcomes = select(filter(titanic_train, master), "Survived")[[1]]
+```
+
+
+```{r}
+mr_survival = sum(mr_outcomes)/length(mr_outcomes)
+mrs_survival = sum(mrs_outcomes)/length(mrs_outcomes)
+miss_survival = sum(miss_outcomes)/length(miss_outcomes)
+master_survival = sum(master_outcomes)/length(master_outcomes)
+```
+
+```{r}
+common_titles = c("Mr.", "Mrs.", "Miss", "Master")
+title_data = data.frame("Title" = common_titles, "prop" = c(mr_survival, mrs_survival, miss_survival, master_survival))
+ggplot(title_data, aes(x=Title, y=prop, fill = common_titles)) + 
+  geom_bar(stat="identity") + 
+  ylab("Survival Rate") + 
+  ggtitle("Survival Rate By Title") + 
+  scale_fill_manual(values = c("skyblue", "pink", "skyblue", "pink")) +
+  theme(legend.position = "None")
+```
+
