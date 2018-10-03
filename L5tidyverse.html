@@ -568,10 +568,12 @@ master_survival = sum(master_outcomes)/length(master_outcomes)
 mr_survival</code></pre>
 <pre><code>## [1] 0.2843895</code></pre>
 <p>Finally, let’s create an awesome ggplot to help us visualize the results.</p>
+<p>Note: We need to change the <code>stat</code> argument in <code>geom_bar()</code> becuase the y variable in our plot is itself a column of the data frame. The default value for <code>stat</code> counts the number of occurences at each x position. It turns out that ggplot has a separate function, <code>geom_col()</code>, that is equivalent to <code>geom_bar(stat=&quot;identity&quot;)</code>.</p>
 <pre class="r"><code>common_titles = c(&quot;Mr.&quot;, &quot;Mrs.&quot;, &quot;Miss&quot;, &quot;Master&quot;)
 title_data = data.frame(&quot;Title&quot; = common_titles, &quot;prop&quot; = c(mr_survival, mrs_survival, miss_survival, master_survival))
 ggplot(title_data, aes(x=Title, y=prop, fill = common_titles)) + 
-  geom_bar(stat=&quot;identity&quot;) + 
+  geom_bar(stat=&quot;identity&quot;) +
+  #geom_col() +
   ylab(&quot;Survival Rate&quot;) + 
   ggtitle(&quot;Survival Rate By Title&quot;) + 
   scale_fill_manual(values = c(&quot;skyblue&quot;, &quot;pink&quot;, &quot;skyblue&quot;, &quot;pink&quot;)) +

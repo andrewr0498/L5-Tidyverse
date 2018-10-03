@@ -305,11 +305,14 @@ mr_survival
 
 Finally, let's create an awesome ggplot to help us visualize the results.
 
+Note: We need to change the `stat` argument in `geom_bar()` becuase the y variable in our plot is itself a column of the data frame. The default value for `stat` counts the number of occurences at each x position. It turns out that ggplot has a separate function, `geom_col()`, that is equivalent to `geom_bar(stat="identity")`. 
+
 ```{r}
 common_titles = c("Mr.", "Mrs.", "Miss", "Master")
 title_data = data.frame("Title" = common_titles, "prop" = c(mr_survival, mrs_survival, miss_survival, master_survival))
 ggplot(title_data, aes(x=Title, y=prop, fill = common_titles)) + 
-  geom_bar(stat="identity") + 
+  geom_bar(stat="identity") +
+  #geom_col() +
   ylab("Survival Rate") + 
   ggtitle("Survival Rate By Title") + 
   scale_fill_manual(values = c("skyblue", "pink", "skyblue", "pink")) +
