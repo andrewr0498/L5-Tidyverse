@@ -55,6 +55,7 @@ str(titanic_train)
 
 * `mutate()`
 * `select()`
+* `filter()`
 * `summarise()`
 * `arrange()`
 * `group_by()`
@@ -97,6 +98,22 @@ head(select(titanic_train, modern_price, Fare))
 #### Exercise
 
 Suppose we were running an analysis of how much each class of ticket cost (In modern and period terms). Many of the columns in the `titanic` dataframe are irelevant for a task like this. Use `select()` to make a dataframe with only relevant variables.
+
+```{r}
+#Your code here
+```
+
+#### filter()
+
+`filter()` allows you to obtain a subset of rows much in the same way that `select` allows you to obtain a subset of columns. For example, if want to get a data frame of only third class passengers:
+
+```{r}
+head(filter(titanic_train, Pclass == 3))
+```
+
+#### Exercise
+
+Use `filter` to obtain a dataframe containing only the information of the female passengers.
 
 ```{r}
 #Your code here

@@ -263,6 +263,7 @@ div.tocify {
 <ul>
 <li><code>mutate()</code></li>
 <li><code>select()</code></li>
+<li><code>filter()</code></li>
 <li><code>summarise()</code></li>
 <li><code>arrange()</code></li>
 <li><code>group_by()</code></li>
@@ -328,6 +329,37 @@ div.tocify {
 <p>Suppose we were running an analysis of how much each class of ticket cost (In modern and period terms). Many of the columns in the <code>titanic</code> dataframe are irelevant for a task like this. Use <code>select()</code> to make a dataframe with only relevant variables.</p>
 <pre class="r"><code>#Your code here</code></pre>
 </div>
+<div id="filter" class="section level4">
+<h4>filter()</h4>
+<p><code>filter()</code> allows you to obtain a subset of rows much in the same way that <code>select</code> allows you to obtain a subset of columns. For example, if want to get a data frame of only third class passengers:</p>
+<pre class="r"><code>head(filter(titanic_train, Pclass == 3))</code></pre>
+<pre><code>##   PassengerId Survived Pclass
+## 1           1        0      3
+## 2           3        1      3
+## 3           5        0      3
+## 4           6        0      3
+## 5           8        0      3
+## 6           9        1      3
+##                                                Name    Sex Age SibSp Parch
+## 1                           Braund, Mr. Owen Harris   male  22     1     0
+## 2                            Heikkinen, Miss. Laina female  26     0     0
+## 3                          Allen, Mr. William Henry   male  35     0     0
+## 4                                  Moran, Mr. James   male  NA     0     0
+## 5                    Palsson, Master. Gosta Leonard   male   2     3     1
+## 6 Johnson, Mrs. Oscar W (Elisabeth Vilhelmina Berg) female  27     0     2
+##             Ticket    Fare Cabin Embarked modern_price
+## 1        A/5 21171  7.2500              S     783.0000
+## 2 STON/O2. 3101282  7.9250              S     855.9000
+## 3           373450  8.0500              S     869.4000
+## 4           330877  8.4583              Q     913.4964
+## 5           349909 21.0750              S    2276.1000
+## 6           347742 11.1333              S    1202.3964</code></pre>
+</div>
+<div id="exercise-2" class="section level4">
+<h4>Exercise</h4>
+<p>Use <code>filter</code> to obtain a dataframe containing only the information of the female passengers.</p>
+<pre class="r"><code>#Your code here</code></pre>
+</div>
 <div id="summarise" class="section level4">
 <h4><code>summarise()</code></h4>
 <p>Gives a summary of data in a single value (using a function of choice). This can be used to calculate means, medians, and other descriptive statistics about your data.</p>
@@ -335,7 +367,7 @@ div.tocify {
 <pre><code>##        avg
 ## 1 3478.054</code></pre>
 </div>
-<div id="exercise-2" class="section level4">
+<div id="exercise-3" class="section level4">
 <h4>Exercise</h4>
 <p>Calculate the median of the ages of the passengers using ‘summarise()’ What do the mean and median tell you about the distribution of the ages of the passengers?</p>
 <pre class="r"><code>#Your code here</code></pre>
