@@ -1,12 +1,7 @@
 ---
-title: "Introduction to `tidyverse`"
+title: "Introduction to tidyverse"
 author: "Andrew Rall and Nick Lai"
 output: learnr::tutorial
-  #html_document:
-   # toc: true
-   # toc_float:
-   #   collapsed: true
-     # smooth_scroll: true
 runtime: shiny_prerendered
 ---
 
@@ -84,7 +79,7 @@ head(titanic_train)
 Using the above framework, add a variable for the modern fare price in dollars. (The pound is worth ~1.3 dollars today)
 
 ```{r Mutate, exercise = TRUE}
-#Your code here
+# Your code here
 ```
 
 
@@ -109,7 +104,7 @@ head(select(titanic_train, modern_price, Fare))
 Suppose we were running an analysis of how much each class of ticket cost (In modern and period terms). Many of the columns in the `titanic` dataframe are irelevant for a task like this. Use `select()` to make a dataframe with only relevant variables.
 
 ```{r select, exercise = TRUE}
-#Your code here
+# Your code here
 ```
 
 #### filter()
@@ -125,7 +120,7 @@ head(filter(titanic_train, Pclass == 3))
 Use `filter` to obtain a dataframe containing only the information of the female passengers.
 
 ```{r filter, exercise = TRUE}
-#Your code here
+# Your code here
 ```
 
 #### `summarise()`
@@ -141,7 +136,7 @@ summarise(titanic_train, avg = mean(modern_price))
 Calculate the mean and median of the ages of the passengers using one `summarise()` call. What do the mean and median tell you about the distribution of the ages of the passengers (e.g. symmetry, skewness)
 
 ```{r summarise, exercise = TRUE}
-#Your code here
+# Your code here
 ```
 
 #### `arrange()`
@@ -151,7 +146,7 @@ Orders the rows of a dataframe by the values of a column. For example, to order 
 ```{r}
 head(arrange(titanic_train, Age))
 
-#Reversing the order
+# Reversing the order
 
 head(arrange(titanic_train, desc(Age)))
 ```
@@ -177,7 +172,7 @@ summarise(group_by(titanic_train, Pclass), avg = mean(modern_price))
 The passenger class is a natural stratification for most of the variables of interest in our dataframe. Use a compound `summarise` and `group_by` call to calculate the stratified proportion of survival for each passenger class.
 
 ```{r summarise and group_by, exercise = TRUE}
-
+# Your code here
 ```
 
 
@@ -296,18 +291,20 @@ Create a density plot of `Fare` with a rug plot for each of the genders. Here is
 ![](images/solution.png){width=80%}
 
 
-Hint: Use `facet_wrap()` just like before.
-
 ```{r facet_wrap, exercise = TRUE}
-#Your code here
+# Your code here
 ```
 
 ### ggplot Example 2: Inspecting Ages
 
+Replicate the plot below:
 
+![](images/ages.png){width=80%}
+
+Hint: Use the `ggplot2` Cheat Sheet listed above to help out!
 
 ```{r Ages, exercise = TRUE}
-????????????????????????????
+# Your code here
 ```
 
 
@@ -413,6 +410,6 @@ ggplot(title_data, aes(x=Title, y=prop, fill = common_titles)) +
 
 What do you think of the results? Is it what you expected? After all there was a tendency to save the "women and children first". Why do you think that the survival rate of the unmarried women (who tend to be younger) is lower than that of the married women? How could you use the data to see if social status effects survival rate?
 
-Hint: It turns out that for each of the common titles, **expect** for "Mrs.", 3rd Class contains the most individuals.
+Hint: It turns out that for each of the common titles, **except** for "Mrs.", 3rd Class contains the most individuals.
 
 
