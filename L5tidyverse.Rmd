@@ -1,31 +1,36 @@
 ---
 title: "Introduction to `tidyverse`"
 author: "Andrew Rall and Nick Lai"
-output: 
-  html_document:
-    toc: true
-    toc_float:
-      collapsed: true
-      smooth_scroll: true
+output: learnr::tutorial
+  #html_document:
+   # toc: true
+   # toc_float:
+   #   collapsed: true
+     # smooth_scroll: true
+runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(titanic)
+library(learnr)
 ```
+
+<center>
+![](images/hex-tidyverse.png){width=30%}
+</center>
+
+
+<center>
+![](images/tidyverse_components.png){width=80%}
+</center>
+
+<br>
 
 During our last lecture on R, we went over basic manipulation of data objects (vectors, data frames). We also introduced the ggplot framework for data visualization as a flexible alternative to the base plotting functions. Today we will discuss these two topics in more detail.
 
 One unique feature of R is a collection of libraries collectively known as the "tidyverse". The tidyverse is a set of professional-grade tools that allow data scientists and researchers to manipulate and display data. We will be going through some members of the tidyverse in our lecture today.
-
-<center>
-![](./hex-tidyverse.png){width=30%}
-</center>
-
-<center>
-![](./tidyverse_components.png)
-</center>
 
 ### Setting up tidyverse
 
@@ -60,6 +65,8 @@ str(titanic_train)
 * `arrange()`
 * `group_by()`
 
+`dplyr` Cheat Sheet: https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf
+
 #### `mutate()`
 
 `mutate()` is a function that takes a dataframe and adds a variable. You can specify this new column of data in terms of other columns of data.
@@ -75,9 +82,11 @@ head(titanic_train)
 #### Exercise
 
 Using the above framework, add a variable for the modern fare price in dollars. (The pound is worth ~1.3 dollars today)
-```{r}
+
+```{r Mutate, exercise = TRUE}
 #Your code here
 ```
+
 
 #### `select()`
 
@@ -99,7 +108,7 @@ head(select(titanic_train, modern_price, Fare))
 
 Suppose we were running an analysis of how much each class of ticket cost (In modern and period terms). Many of the columns in the `titanic` dataframe are irelevant for a task like this. Use `select()` to make a dataframe with only relevant variables.
 
-```{r}
+```{r select, exercise = TRUE}
 #Your code here
 ```
 
@@ -115,7 +124,7 @@ head(filter(titanic_train, Pclass == 3))
 
 Use `filter` to obtain a dataframe containing only the information of the female passengers.
 
-```{r}
+```{r filter, exercise = TRUE}
 #Your code here
 ```
 
@@ -129,9 +138,9 @@ summarise(titanic_train, avg = mean(modern_price))
 
 #### Exercise
 
-Calculate the median of the ages of the passengers using 'summarise()' What do the mean and median tell you about the distribution of the ages of the passengers?
+Calculate the mean and median of the ages of the passengers using one `summarise()` call. What do the mean and median tell you about the distribution of the ages of the passengers (e.g. symmetry, skewness)
 
-```{r}
+```{r summarise, exercise = TRUE}
 #Your code here
 ```
 
@@ -163,19 +172,46 @@ We can observe an application of the grouping by using the summarise function.
 summarise(group_by(titanic_train, Pclass), avg = mean(modern_price))
 ```
 
+#### Exercise
+
+The passenger class is a natural stratification for most of the variables of interest in our dataframe. Use a compound `summarise` and `group_by` call to calculate the stratified proportion of survival for each passenger class.
+
+```{r summarise and group_by, exercise = TRUE}
+
+```
+
+
 ### Another Look at `ggplot2` 
+
+`ggplot2` Cheat Sheet: https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf
 
 Last lecture, we went over the `ggplot` framework for plotting data. As a refresher, below is how we would plot a histogram of fares from our `titanic` dataset.
 
 ```{r}
-ggplot(data = titanic_train, aes(x = Fare)) + geom_histogram() + ggtitle("Histogam of Fares") + ylab("Count")
+ggplot(data = titanic_train, aes(x = Fare))
+```
+
+```{r}
+ggplot(data = titanic_train, aes(x = Fare)) + geom_histogram() 
 ```
 
 Today, we will go into more detail about exactly what options you have for plotting data in the `ggplot2` package.
 
-### Example: Inspecting Fares
+### ggplot Example 1: Inspecting Fares
 
 Let's first recreate the plot Nick made above but add and change a few things.
+
+
+```{r}
+ggplot(data = titanic_train, aes(x = Fare)) + 
+  geom_histogram(binwidth = 10, fill = "cornflowerblue")
+```
+
+```{r}
+ggplot(data = titanic_train, aes(x = Fare)) + 
+  geom_histogram(binwidth = 10, fill = "cornflowerblue") + 
+  geom_rug() 
+```
 
 ```{r}
 ggplot(data = titanic_train, aes(x = Fare)) + 
@@ -190,6 +226,25 @@ A natural question we might have is what did the Fare distribution look like for
 Instead of using `dplyr` to split our data into 3 separate datasets for each of the three classes and then making three separate plot, we can just use one of the awesome features of ggplot, `facet_wrap()`! 
 
 `facet_wrap()` will split up your data by the column you pass as it's argument. Just make sure to put a tilde (~) in front of the column name!
+
+```{r}
+ggplot(data = titanic_train, aes(x = Fare, color = factor(Pclass))) + 
+  geom_density() + 
+  facet_wrap(~ Pclass) 
+```
+
+```{r}
+ggplot(data = titanic_train, aes(x = Fare, color = factor(Pclass))) + 
+  geom_density() + 
+  facet_wrap(~ Pclass, scales = "free") 
+```
+
+```{r}
+ggplot(data = titanic_train, aes(x = Fare, color = factor(Pclass))) + 
+  geom_density() + 
+  facet_wrap(~ Pclass, scales = "free") + 
+  theme(legend.position = "none") 
+```
 
 ```{r}
 ggplot(data = titanic_train, aes(x = Fare, color = factor(Pclass))) + 
@@ -212,31 +267,49 @@ third_class_median = median(select(filter(titanic_train, Pclass == 3), Fare)[[1]
 Here we're making the same histogram from earlier, but add a `geom_vline()` for each of the median values calculated above.
 
 ```{r}
-ggplot(titanic_train, aes(Fare)) + geom_histogram(binwidth = 10) + 
+ggplot(data = titanic_train, aes(x = Fare)) + 
+  geom_histogram(binwidth = 10) 
+```
+
+```{r}
+ggplot(data = titanic_train, aes(x = Fare)) +
+  geom_histogram(binwidth = 10) + 
   geom_vline(aes(xintercept = first_class_median, color = "First")) + 
   geom_vline(aes(xintercept = second_class_median, color = "Second")) + 
-  geom_vline(aes(xintercept =third_class_median, color = "Third")) + 
-  scale_color_manual(name="Class", values = c("First" = "darkgreen", "Second" = "blue", "Third" = "red")) + 
+  geom_vline(aes(xintercept = third_class_median, color = "Third"))
+```
+
+```{r}
+ggplot(data = titanic_train, aes(x = Fare)) + geom_histogram(binwidth = 10) + 
+  geom_vline(aes(xintercept = first_class_median, color = "First")) + 
+  geom_vline(aes(xintercept = second_class_median, color = "Second")) + 
+  geom_vline(aes(xintercept = third_class_median, color = "Third")) + 
   ggtitle("Distribution of Fares on the Titanic") + 
   xlab("Fare (1912 pounds)") + ylab("Num Passengers")
 ```
 
-### Exercise: Faceting in ggplot
 
-Create a density plot of `Fare` with a rug plot for each of the genders.
+### ggplot Exercise 1: Faceting
+
+Create a density plot of `Fare` with a rug plot for each of the genders. Here is what your plot should look like:
+
+![](images/solution.png){width=80%}
+
 
 Hint: Use `facet_wrap()` just like before.
 
-If you finish early add some labels and a title.
-
-```{r}
-ggplot(titanic_train, aes(Fare, color=factor(Sex))) + 
-  geom_density() + 
-  facet_wrap(~ Sex) + 
-  geom_rug() +
-  theme(legend.position = "none") + 
-  xlab("Fare (1912 pounds)")
+```{r facet_wrap, exercise = TRUE}
+#Your code here
 ```
+
+### ggplot Example 2: Inspecting Ages
+
+
+
+```{r Ages, exercise = TRUE}
+????????????????????????????
+```
+
 
 ### Example: Title and survival rate
 
@@ -250,7 +323,7 @@ But first a little grammar lesson. In the early 1900s there were four common tit
 <br>
 
 <center>
-![](./titanic_passengers.jpg){width=60%}
+![](images/titanic_passengers.jpg){width=60%}
 </center>
 
 <br>
@@ -263,6 +336,8 @@ head(names)
 ```
 
 Second, use `str_detect()` from the `stringr` package.
+
+`stringr` Cheat Sheet:
 
 `str_detect(string, pattern)`
 
